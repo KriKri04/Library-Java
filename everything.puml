@@ -1,0 +1,304 @@
+@startuml
+class com.example.library.model.Notification {
+- Long id
+- AppUser userUsername
+- String message
+- LocalDate createdAt
++ Long getId()
++ void setId(Long)
++ AppUser getUserUsername()
++ void setUserUsername(AppUser)
++ String getMessage()
++ void setMessage(String)
++ LocalDate getCreatedAt()
++ void setCreatedAt(LocalDate)
+}
+
+
+class com.example.library.model.AppUser {
+- String username
+- String password
+- Set<Role> roles
++ String getUsername()
++ void setUsername(String)
++ String getPassword()
++ void setPassword(String)
++ Set<Role> getRoles()
++ void setRoles(Set<Role>)
+}
+
+
+class com.example.library.dto.BookLoanDto {
+- String isbn
+- String username
++ String getIsbn()
++ void setIsbn(String)
++ String getUsername()
++ void setUsername(String)
+}
+
+
+interface com.example.library.Repository.BookRepository {
+~ Book findByIsbn(String)
+}
+
+class com.example.library.dto.RegistrationDto {
+- String username
+- String password
++ String getUsername()
++ void setUsername(String)
++ String getPassword()
++ void setPassword(String)
+}
+
+
+class com.example.library.controller.LoanController {
+- BookLoanService bookLoanService
+- BookService bookService
+- AppUserService appUserService
++ String allActiveLoans(ModelMap)
++ String allLoans(ModelMap)
++ String insertLoan(ModelMap)
++ String doInsertLoan(BookLoanDto,BindingResult)
++ String returnLoan(Long)
+}
+
+
+interface com.example.library.Repository.BookLoanRepository {
+}
+interface com.example.library.Repository.CategoryRepository {
+}
+class com.example.library.controller.CategoryController {
+- CategoryService categoryService
++ String getAllCategories(ModelMap)
++ String insertCategory(ModelMap)
++ String doInsertCategory(Category,BindingResult,ModelMap,RedirectAttributes)
++ String updateCategory(Long,ModelMap)
++ String doUpdateCategory(Category,BindingResult)
++ String deleteCategory(Long,ModelMap,RedirectAttributes)
+}
+
+
+class com.example.library.model.Role {
+- Long id
+- String roleName
+- Set<AppUser> users
++ Long getId()
++ void setId(Long)
++ String getRoleName()
++ void setRoleName(String)
++ Set<AppUser> getUsers()
++ void setUsers(Set<AppUser>)
+}
+
+
+class com.example.library.security.SecurityUtil {
++ {static} String getCurrentUsername()
+}
+
+class com.example.library.service.BookLoanService {
+- BookLoanRepository bookLoanRepository
+- BookService bookService
+- AppUserService appUserService
++ void saveBookLoan(BookLoan)
++ List<BookLoan> getAllActiveBookLoans()
++ List<BookLoan> getAllLoans()
++ void markBookLoanByIdAsReturned(Long)
++ BookLoan getBookLoanById(Long)
++ void loanBook(String,String)
+}
+
+
+class com.example.library.model.Author {
+- Long id
+- String firstName
+- String lastName
++ Long getId()
++ void setId(Long)
++ String getFirstName()
++ void setFirstName(String)
++ String getLastName()
++ void setLastName(String)
+}
+
+
+class com.example.library.service.BookService {
+- BookRepository bookRepository
++ List<Book> getAllBooks()
++ Book getBookByIsbn(String)
++ void insertBook(Book)
++ void updateBook(Book)
++ void disableBookByIsbn(String)
+}
+
+
+class com.example.library.model.Category {
+- Long id
+- String categoryName
++ Long getId()
++ void setId(Long)
++ String getCategoryName()
++ void setCategoryName(String)
+}
+
+
+class com.example.library.model.BookLoan {
+- Long id
+- AppUser user
+- Book book
+- Instant borrowed
+- Instant returned
+- Instant dueDate
+- String status
++ Long getId()
++ void setId(Long)
++ AppUser getUser()
++ void setUser(AppUser)
++ Book getBook()
++ void setBook(Book)
++ Instant getBorrowed()
++ void setBorrowed(Instant)
++ Instant getReturned()
++ void setReturned(Instant)
++ Instant getDueDate()
++ void setDueDate(Instant)
++ String getStatus()
++ void setStatus(String)
+}
+
+
+class com.example.library.service.AuthorService {
+- AuthorRepository authorRepository
++ List<Author> getAllAuthors()
++ void insertAuthor(Author)
++ void updateAuthor(Author)
++ void deleteAuthor(Author)
++ Author getAuthorById(Long)
++ void deleteAuthorById(Long)
+}
+
+
+class com.example.library.model.Book {
+- String isbn
+- String title
+- Boolean availability
+- LocalDate releaseDate
+- Category category
+- Author author
+- Long availableQuantity
+- Long totalQuantity
++ Long getAvailableQuantity()
++ void setAvailableQuantity(Long)
++ Long getTotalQuantity()
++ void setTotalQuantity(Long)
++ String getIsbn()
++ void setIsbn(String)
++ String getTitle()
++ void setTitle(String)
++ Boolean getAvailability()
++ void setAvailability(Boolean)
++ LocalDate getReleaseDate()
++ void setReleaseDate(LocalDate)
++ Category getCategory()
++ void setCategory(Category)
++ Author getAuthor()
++ void setAuthor(Author)
+}
+
+
+class com.example.library.service.CategoryService {
+- CategoryRepository categoryRepository
++ List<Category> getAllCategories()
++ void insertCategory(Category)
++ void updateCategory(Category)
++ void deleteCategoryById(Long)
++ Category getCategoryById(Long)
+}
+
+
+interface com.example.library.Repository.AppUserRepository {
+~ AppUser findAppUserByUsername(String)
+}
+
+class com.example.library.service.AppUserService {
+- AppUserRepository appUserRepository
+- RoleRepository roleRepository
+- PasswordEncoder passwordEncoder
++ void saveAppUser(RegistrationDto)
++ AppUser findAppUserByUsername(String)
+}
+
+
+class com.example.library.controller.AuthorController {
+- AuthorService authorService
++ String getAllAuthors(ModelMap)
++ String insertAuthor(ModelMap)
++ String doInsertAuthor(Author,BindingResult,ModelMap,RedirectAttributes)
++ String updateAuthor(Long,ModelMap)
++ String doUpdateAuthor(Author,BindingResult)
++ String deleteAuthor(Long,ModelMap,RedirectAttributes)
+}
+
+
+class com.example.library.controller.AuthController {
+- AppUserService appUserService
++ String registerUser(RegistrationDto,BindingResult,Model)
++ String registerUser(Model)
++ String loginUser()
+}
+
+
+class com.example.library.controller.MainController {
+- AppUserService appUserService
++ String index(ModelMap)
+}
+
+
+interface com.example.library.Repository.RoleRepository {
+~ Role findRoleByRoleName(String)
+}
+
+class com.example.library.LibraryApplication {
++ {static} void main(String[])
+}
+
+class com.example.library.security.AppUserDetailsService {
+- AppUserRepository appUserRepository
++ UserDetails loadUserByUsername(String)
+}
+
+
+class com.example.library.controller.BookController {
+- BookService bookService
+- CategoryService categoryService
+- AuthorService authorService
++ String books(ModelMap)
++ String insertBook(ModelMap)
++ String doInsertMedicine(Book,BindingResult,ModelMap,RedirectAttributes)
++ String updateBook(String,ModelMap)
++ String doUpdateBook(Book,BindingResult,ModelMap)
++ String deleteBook(String,ModelMap)
+}
+
+
+class com.example.library.security.SecurityConfig {
+- AppUserDetailsService appUserDetailsService
++ {static} PasswordEncoder passwordEncoder()
++ SecurityFilterChain securityFilterChain(HttpSecurity)
++ void configure(AuthenticationManagerBuilder)
++ SpringSecurityDialect springSecurityDialect()
+}
+
+
+interface com.example.library.Repository.AuthorRepository {
+}
+
+
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.library.Repository.BookRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.library.Repository.BookLoanRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.library.Repository.CategoryRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.library.Repository.AppUserRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.library.Repository.RoleRepository
+org.springframework.security.core.userdetails.UserDetailsService <|.. com.example.library.security.AppUserDetailsService
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.library.Repository.AuthorRepository
+@enduml
